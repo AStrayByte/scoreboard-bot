@@ -41,14 +41,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_text_input(text: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
     async def respond(text:str):
-        nonlocal context
-        nonlocal update
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=text,
             reply_to_message_id=update.message.message_id,
         )
-    message_id = update.message.message_id
     username = update.effective_user.username
     resp = None
     if text.startswith("Tango #"):
