@@ -1,5 +1,5 @@
 import logging
-import rich
+import rich  # noqa: F401
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -9,10 +9,13 @@ from telegram.ext import (
     filters,
 )
 
-from game_parsers.connections import parse_connections
+from game_parsers.connections import connections_stats, parse_connections
 from game_parsers.tango import parse_tango
 from game_parsers.zip import parse_zip
 from game_parsers.queens import parse_queens
+from secret import DB_URL
+from tortoise import Tortoise
+
 
 TOKEN = "SECRET"
 
@@ -77,9 +80,14 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
     elif text.startswith("Queens #"):
         resp = parse_queens(text, username)
     elif text.startswith("Connections\nPuzzle #"):
-        resp, json = parse_connections(text, username)
+        resp, json = await parse_connections(text, username)
+    elif text.startswith("/stats"):
+        print("Stats command received")
+        resp = "**STATS**\n\n"
+        resp += await connections_stats()
     else:
-        await respond(f"Unknown text: {text}")
+        # ignore chatter
+        ...
     if resp:
         await respond(resp)
 
@@ -91,9 +99,11 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.strip()
     await handle_text_input(text, update, context)
 
-if __name__ == "__main__":
-    application = ApplicationBuilder().token(TOKEN).build()
 
+def start_telegram_agent():
+    """
+    Start the Telegram bot agent."""
+    application = ApplicationBuilder().token(TOKEN).post_init(post_init).build()
     start_handler = CommandHandler("start", start)
 
     # message handler to handle random strings
@@ -103,3 +113,16 @@ if __name__ == "__main__":
     application.add_handler(message_handler)
 
     application.run_polling()
+
+
+async def post_init(application):
+    """
+    This function is called after the telegram application is built."""
+    # Startup Tortoise
+    await Tortoise.init(db_url=DB_URL, modules={"models": ["orm.models"]})
+    # Generate schemas
+    await Tortoise.generate_schemas()
+
+
+if __name__ == "__main__":
+    start_telegram_agent()

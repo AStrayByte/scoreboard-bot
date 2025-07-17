@@ -1,11 +1,21 @@
 import re
+from orm.models import ConnectionsPlay
+from tortoise.functions import Avg
 
 
-def parse_connections(text: str, username: str) -> tuple[str, dict[str, str | int]]:
+async def parse_connections(
+    text: str, username: str, no_db=False
+) -> tuple[str, dict[str, str | int]]:
     """
     Extracts and formats Connections game information from a given text.
     Args:
         text (str): The input text containing Connections game information.
+        username (str): The username of the player.
+        no_db (bool): If True, does not save to the database.
+    Returns:
+        tuple[str, dict[str, str | int]]: A tuple containing a response string and a JSON-like
+            dictionary with game details.
+    Example:
 
     Connections
     Puzzle #736
@@ -40,8 +50,11 @@ def parse_connections(text: str, username: str) -> tuple[str, dict[str, str | in
     game_number = match.group("game_number")
 
     if not game_number:
-        return f"""Incomplete Connections game information found.
-        Game number: {game_number}""", {}
+        return (
+            f"""Incomplete Connections game information found.
+        Game number: {game_number}""",
+            {},
+        )
 
     lines = text.splitlines()
     # lines = lines[lines.index(f"Puzzle #{game_number}") + 1:]
@@ -70,11 +83,24 @@ def parse_connections(text: str, username: str) -> tuple[str, dict[str, str | in
         else:
             mistakes -= 10
     score = green_found + yellow_found + blue_found + purple_found + mistakes + purple_first
-
-    if mistakes > 0 and not all([green_found, yellow_found, blue_found, purple_found]):
+    won = all([green_found, yellow_found, blue_found, purple_found])
+    if mistakes > 0 and not won:
         return f"Connections Game #{game_number} incomplete.", {}
 
-    resp_string = f"Connections Game #{game_number} completed with score 100 @{username}."
+    is_new = None
+    if not no_db:
+        obj, is_new = await ConnectionsPlay.update_or_create(
+            username=username,
+            game_number=game_number,
+            defaults={
+                "score": score,
+                "purple_first": purple_first,
+                "mistakes": mistakes,
+                "won": won,
+            },
+        )
+
+    resp_string = f"{'(UPDATING RECORD) ' if is_new is False else ''}Connections Game #{game_number} completed with score {score} @{username}."
     resp_json = {
         "game_type": "connections",
         "game_number": game_number,
@@ -82,3 +108,48 @@ def parse_connections(text: str, username: str) -> tuple[str, dict[str, str | in
         "username": username,
     }
     return resp_string, resp_json
+
+
+async def connections_stats():
+    """
+    Placeholder function for future Connections game statistics.
+    Currently does nothing.
+    """
+    # Count of games played
+    total_count = await ConnectionsPlay.all().count()
+    # Count of wins
+    win_count = await ConnectionsPlay.filter(won=True).count()
+    lose_count = total_count - win_count
+    # Average score
+
+    result = await ConnectionsPlay.all().annotate(avg_score=Avg("score")).values("avg_score")
+    average_score = result[0]["avg_score"] if result else None
+    # Average mistakes
+    result = await ConnectionsPlay.all().annotate(avg_mistakes=Avg("mistakes")).values("avg_mistakes")
+    average_mistakes = result[0]["avg_mistakes"] if result else None
+
+    average_score_by_username = await ConnectionsPlay.annotate(
+        avg_score=Avg("score")
+    ).group_by("username").values("username", "avg_score")
+
+    average_mistakes_by_username = None
+    total_games_by_username = None
+    total_wins_by_username = None
+    # Ave
+    resp = f"""**Connections Game Stats**
+Total Games Played: {total_count}
+Total Wins: {win_count}
+Total Losses: {lose_count}
+Average Score: {average_score}
+Average Mistakes: {average_mistakes}
+Average Score by Username:
+{average_score_by_username}
+Average Mistakes by Username:
+{average_mistakes_by_username}
+Total Games by Username:
+{total_games_by_username}
+Total Wins by Username:
+{total_wins_by_username}
+
+"""
+    return resp
