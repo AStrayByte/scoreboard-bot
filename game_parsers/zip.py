@@ -27,9 +27,10 @@ def parse_zip(text: str, username: str) -> list[str, dict]:
     if not game_number or not minutes or not seconds:
         return f"""Incomplete Zip game information found.
         Game number: {game_number}, Minutes: {minutes}, Seconds: {seconds}, Backtracks: {backtracks}"""
+    game_number = int(game_number)
     total_seconds = int(minutes) * 60 + int(seconds)
     if backtracks is None:
-        backtracks = "0"
+        backtracks = 0
     else:
         backtracks = int(backtracks)
     resp_string = f"Zip Game #{game_number} completed in {total_seconds} seconds with {backtracks} backtracks by @{username}."

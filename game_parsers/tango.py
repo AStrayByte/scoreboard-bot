@@ -29,6 +29,7 @@ def parse_tango(text: str, username: str) -> list[str, dict]:
     if not game_number or not minutes or not seconds:
         return f"""Incomplete Tango game information found.
         Game number: {game_number}, Minutes: {minutes}, Seconds: {seconds}"""
+    game_number = int(game_number)
     total_seconds = int(minutes) * 60 + int(seconds)
     resp_string = f"Tango Game #{game_number} completed in {total_seconds} seconds by @{username}."
     resp_json = {
