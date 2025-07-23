@@ -206,3 +206,7 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 secret.py
+db.sqlite3-shm
+db.sqlite3-wal
+.gitignore
+test_leaderboard_image.png

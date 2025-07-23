@@ -34,3 +34,13 @@ class ConnectionsPlay(Play):
 
     class Meta:
         table = "connections_play"
+        default_connection = "default"
+
+
+class QueensPlay(Play):
+    time_taken = fields.IntField()
+    flawless = fields.BooleanField()
+
+    class Meta:
+        table = "queens_play"
+        default_connection = "default"

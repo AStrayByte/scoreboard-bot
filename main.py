@@ -9,13 +9,20 @@ from telegram.ext import (
     filters,
 )
 
-from game_parsers.connections import connections_stats, parse_connections
+from game_parsers.connections import (
+    connections_stats,
+    parse_connections,
+    todays_connection_leaderboard_data,
+    todays_connections_leaderboard,
+)
 from game_parsers.tango import parse_tango
 from game_parsers.zip import parse_zip
-from game_parsers.queens import parse_queens
+from game_parsers.queens import parse_queens, todays_queens_leaderboard_data
+from image_generators.leaderboard import generate_leaderboard_image
 from secret import DB_URL
 from tortoise import Tortoise
 
+from telegram.ext import Application
 
 TOKEN = "SECRET"
 
@@ -56,6 +63,23 @@ def get_username(update: Update) -> str | None:
     return username
 
 
+async def chart_test(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    html = "<pre>Name     | Age | City\n---------|-----|--------\nJohn     | 🥈  | NYC\nJane     | 🥇  | LA</pre>"
+    html += '<b>Monthly Sales Report</b>\n\n<i>Here\'s our performance data for this quarter:</i>\n\n<b>Q1 Results:</b>\n<pre>Product  | Sales | Revenue\n---------|-------|--------\nWidget A | 150   | $1,500\nWidget B | 200   | $3,000\nWidget C | 75    | $750</pre>\n\nAs you can see, Widget B performed exceptionally well.\n\n<b>Regional Breakdown:</b>\n<pre>Region | Total Sales\n-------|------------\nNorth  | 200\nSouth  | 150\nEast   | 75</pre>\n\n<u>Key Takeaways:</u>\n• Northern region leads in sales\n• Widget B is our top performer\n• Consider increasing Widget C marketing\n\n<a href="https://example.com/report">View full report</a>\n\n'
+    html += "<code>Name     | Age | City\n---------|-----|--------\nJohn     | 25  | NYC\nJane     | 30  | LA</code>"
+    html += "\n\n┌─────────┬─────┬────────┐\n│ Name    │ Age │ City   │\n├─────────┼─────┼────────┤\n│ John    │ 25  │ NYC    │\n│ Jane    │ 30  │ LA     │\n└─────────┴─────┴────────┘"
+    html += "\n\n<code>Name      Age   City\nJohn      25    NYC\nJane      30    LA</code>"
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=html,
+        parse_mode="HTML",
+        reply_to_message_id=update.message.message_id,
+        disable_web_page_preview=True,
+        disable_notification=True,
+    )
+    return
+
+
 async def handle_text_input(text: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
     async def respond(text: str):
         if not update.effective_chat or not update.message:
@@ -78,13 +102,30 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
     elif text.startswith("Zip #"):
         resp = parse_zip(text, username)
     elif text.startswith("Queens #"):
-        resp = parse_queens(text, username)
+        resp, json = await parse_queens(text, username)
     elif text.startswith("Connections\nPuzzle #"):
         resp, json = await parse_connections(text, username)
     elif text.startswith("/stats"):
         print("Stats command received")
         resp = "**STATS**\n\n"
         resp += await connections_stats()
+    elif text.startswith("/todays_leaderboard"):
+        data = []
+        data.append(await todays_connection_leaderboard_data())
+        data.append(await todays_queens_leaderboard_data())
+        image = await generate_leaderboard_image(data)
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=image,
+            caption="Today's Connections Leaderboard",
+            reply_to_message_id=update.message.message_id,
+            disable_notification=True,
+        )
+
+    elif text.startswith("/chart_test"):
+        print("Chart test command received")
+        await chart_test(update, context)
+        return
     else:
         # ignore chatter
         ...
@@ -115,13 +156,22 @@ def start_telegram_agent():
     application.run_polling()
 
 
-async def post_init(application):
+async def post_init(application: Application):
     """
     This function is called after the telegram application is built."""
     # Startup Tortoise
     await Tortoise.init(db_url=DB_URL, modules={"models": ["orm.models"]})
     # Generate schemas
     await Tortoise.generate_schemas()
+    # Set bot commands
+    await application.bot.set_my_commands(
+        [
+            # ("start", "Starts the bot"),
+            ("todays_leaderboard", "Shows today's leaderboard"),
+            ("stats", "Shows your game stats"),
+            ("chart_test", "Test command for chart"),
+        ]
+    )
 
 
 if __name__ == "__main__":
