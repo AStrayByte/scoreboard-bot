@@ -1,6 +1,5 @@
-from game_parsers.connections import (
+from games.connectionsOLD import (
     connections_date_to_game_number,
-    connections_stats,
     parse_connections,
     todays_connection_leaderboard_data,
 )
@@ -116,6 +115,7 @@ async def test_connections_daily_leaderboard():
             purple_first=True,
             mistakes=0,
             won=True,
+            raw_text="",
         ),
         ConnectionsPlay(
             game_number=todays_game_number,
@@ -124,6 +124,7 @@ async def test_connections_daily_leaderboard():
             purple_first=True,
             mistakes=0,
             won=True,
+            raw_text="",
         ),
         ConnectionsPlay(
             game_number=todays_game_number,
@@ -132,6 +133,7 @@ async def test_connections_daily_leaderboard():
             purple_first=True,
             mistakes=0,
             won=True,
+            raw_text="",
         ),
         ConnectionsPlay(
             game_number=todays_game_number - 1,
@@ -140,6 +142,7 @@ async def test_connections_daily_leaderboard():
             purple_first=True,
             mistakes=0,
             won=True,
+            raw_text="",
         ),
         ConnectionsPlay(
             game_number=todays_game_number + 1,
@@ -148,6 +151,7 @@ async def test_connections_daily_leaderboard():
             purple_first=True,
             mistakes=0,
             won=True,
+            raw_text="",
         ),
     ]
     for obj in con_game_objs:

@@ -1,28 +1,24 @@
 import logging
-import rich  # noqa: F401
+
+from rich import print  # noqa: F401
 from telegram import Update
 from telegram.ext import (
+    Application,
     ApplicationBuilder,
     CommandHandler,
     ContextTypes,
     MessageHandler,
     filters,
 )
-
-from game_parsers.connections import (
-    connections_stats,
-    parse_connections,
-    todays_connection_leaderboard_data,
-    todays_connections_leaderboard,
-)
-from game_parsers.tango import parse_tango
-from game_parsers.zip import parse_zip
-from game_parsers.queens import parse_queens, todays_queens_leaderboard_data
-from image_generators.leaderboard import generate_leaderboard_image
-from secret import DB_URL
 from tortoise import Tortoise
 
-from telegram.ext import Application
+from games.queens import parse_queens, todays_queens_leaderboard_data
+from games.tango import parse_tango
+from games.zip import parse_zip
+from image_generators.leaderboard import generate_leaderboard_image
+from secret import DB_URL
+from games.connections import ConnectionsGame
+from aerich_config import TORTOISE_ORM
 
 TOKEN = "SECRET"
 
@@ -104,14 +100,14 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
     elif text.startswith("Queens #"):
         resp, json = await parse_queens(text, username)
     elif text.startswith("Connections\nPuzzle #"):
-        resp, json = await parse_connections(text, username)
-    elif text.startswith("/stats"):
-        print("Stats command received")
-        resp = "**STATS**\n\n"
-        resp += await connections_stats()
+        resp, json = await ConnectionsGame().parse_text(text, username)
+    # elif text.startswith("/stats"):
+    #     print("Stats command received")
+    #     resp = "**STATS**\n\n"
+    #     resp += await connections_stats()
     elif text.startswith("/todays_leaderboard"):
         data = []
-        data.append(await todays_connection_leaderboard_data())
+        data.append(await ConnectionsGame().todays_data())
         data.append(await todays_queens_leaderboard_data())
         image = await generate_leaderboard_image(data)
         await context.bot.send_photo(
@@ -138,6 +134,10 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print("Update does not contain a message or text!")
         return
     text = update.message.text.strip()
+    print("~" * 80)
+    print(text)
+    print("~" * 80)
+
     await handle_text_input(text, update, context)
 
 
@@ -160,7 +160,7 @@ async def post_init(application: Application):
     """
     This function is called after the telegram application is built."""
     # Startup Tortoise
-    await Tortoise.init(db_url=DB_URL, modules={"models": ["orm.models"]})
+    await Tortoise.init(config=TORTOISE_ORM)
     # Generate schemas
     await Tortoise.generate_schemas()
     # Set bot commands

@@ -1,27 +1,13 @@
 from tortoise import fields
 from tortoise.models import Model
 
-# Save a game instance
-# Show leaderboard for day
-# Show User Stats
-#   - Total Games Played
-#   - Per Game
-#         - Total Games Played
-#         - Total Win/loss
-
-# Different games
-# Connections - score, purples first
-# Queens - time and flawless
-# Tango - time
-# Zip - time and backtracks
-# MiniCrossword - time
-
 
 class Play(Model):
     id = fields.IntField(primary_key=True)
     username = fields.CharField(max_length=255)
     game_number = fields.IntField()
     score = fields.IntField()
+    raw_text = fields.TextField()
 
     class Meta:
         abstract = True
@@ -44,3 +30,19 @@ class QueensPlay(Play):
     class Meta:
         table = "queens_play"
         default_connection = "default"
+
+
+# Save a game instance
+# Show leaderboard for day
+# Show User Stats
+#   - Total Games Played
+#   - Per Game
+#         - Total Games Played
+#         - Total Win/loss
+
+# Different games
+# Connections - score, purples first
+# Queens - time and flawless
+# Tango - time
+# Zip - time and backtracks
+# MiniCrossword - time

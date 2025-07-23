@@ -1,7 +1,7 @@
 #!python3
 import unittest
 
-from game_parsers.zip import parse_zip
+from games.zip import parse_zip
 
 
 class TestZip(unittest.TestCase):

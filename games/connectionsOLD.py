@@ -140,6 +140,7 @@ async def parse_connections(
                 "purple_first": purple_first,
                 "mistakes": mistakes,
                 "won": won,
+                "raw_text": text,
             },
         )
 

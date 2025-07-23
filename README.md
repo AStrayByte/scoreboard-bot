@@ -13,3 +13,9 @@ Telegram bot to compare and share scores with friends across multiple apps like 
 # 2. Install requirements
 
 # pip install -r requirements.txt
+
+
+db migration notes
+aerich init-db
+aerich upgrade
+aerich migrate

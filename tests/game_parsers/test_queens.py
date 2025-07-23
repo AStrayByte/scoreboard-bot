@@ -1,6 +1,6 @@
 #!python3
 
-from game_parsers.queens import parse_queens
+from games.queens import parse_queens
 
 import pytest
 

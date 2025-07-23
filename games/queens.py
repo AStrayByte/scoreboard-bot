@@ -51,6 +51,7 @@ async def parse_queens(text: str, username: str, no_db=False) -> tuple[str, dict
                 "score": score,
                 "time_taken": total_seconds,
                 "flawless": flawless,
+                "raw_text": text,
             },
         )
 

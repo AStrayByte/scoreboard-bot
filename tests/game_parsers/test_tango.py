@@ -1,7 +1,7 @@
 #!python3
 import unittest
 
-from game_parsers.tango import parse_tango
+from games.tango import parse_tango
 
 
 class TestTango(unittest.TestCase):
