@@ -4,6 +4,7 @@ from image_generators.leaderboard import generate_leaderboard_payload, generate_
 from rich import print  # noqa: E402 F401
 import pytest
 # from datetime import date
+import vcr
 
 
 @pytest.mark.asyncio
@@ -41,7 +42,8 @@ async def test_image():
         },
     ]
 
-    image = await generate_leaderboard_image(games)
+    with vcr.use_cassette("tests/cassettes/test_leaderboard.yaml"):
+        image = await generate_leaderboard_image(games)
     # Save the image to a file for verification
     with open("test_leaderboard_image.png", "wb") as f:
         f.write(image)
