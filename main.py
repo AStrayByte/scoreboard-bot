@@ -12,8 +12,7 @@ from telegram.ext import (
 )
 from tortoise import Tortoise
 
-from games.queens import QueensGame, todays_queens_leaderboard_data
-from games.tango import parse_tango
+from games.queens import QueensGame
 from games.zip import parse_zip
 from image_generators.leaderboard import generate_leaderboard_image
 from games.connections import ConnectionsGame

@@ -31,7 +31,7 @@ class QueensGame(Game):
         """
         return {
             "score": data["score"],
-            "time_taken": data["seconds"],
+            "seconds": data["seconds"],
             "flawless": data["flawless"],
             "raw_text": data["raw_text"],
         }

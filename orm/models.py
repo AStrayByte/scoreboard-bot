@@ -24,11 +24,20 @@ class ConnectionsPlay(Play):
 
 
 class QueensPlay(Play):
-    time_taken = fields.IntField()
+    seconds = fields.IntField()
     flawless = fields.BooleanField()
 
     class Meta:
         table = "queens_play"
+        default_connection = "default"
+
+
+class TangoPlay(Play):
+    seconds = fields.IntField()
+    flawless = fields.BooleanField()
+
+    class Meta:
+        table = "tango_play"
         default_connection = "default"
 
 
