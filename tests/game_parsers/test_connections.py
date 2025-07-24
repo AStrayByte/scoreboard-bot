@@ -1,21 +1,18 @@
-from games.connectionsOLD import (
-    connections_date_to_game_number,
-    parse_connections,
-    todays_connection_leaderboard_data,
-)
 from orm.models import ConnectionsPlay
 from rich import print  # noqa: E402 F401
 import pytest
 from datetime import date
+from games.connections import ConnectionsGame
 
 
 @pytest.mark.asyncio
 async def test_connections_perfect():
+    await ConnectionsPlay.all().delete()
     text = "Connections\nPuzzle #736\n🟪🟪🟪🟪\n🟦🟦🟦🟦\n🟩🟩🟩🟩\n🟨🟨🟨🟨"
-    resp_string, resp_json = await parse_connections(text, "testuser", no_db=True)
+    resp_string, resp_json = await ConnectionsGame.parse_text(text, "testuser", no_db=True)
     assert resp_json == {
         "game_type": "connections",
-        "game_number": "736",
+        "game_number": 736,
         "score": 100,
         "username": "testuser",
     }
@@ -24,6 +21,7 @@ async def test_connections_perfect():
 
 @pytest.mark.asyncio
 async def test_connections_scores():
+    await ConnectionsPlay.all().delete()
     start = "Connections\nPuzzle #736\n"
     tests = [
         (f"{start}🟪🟪🟪🟪\n🟦🟦🟦🟦\n🟩🟩🟩🟩\n🟨🟨🟨🟨", 100),
@@ -34,13 +32,14 @@ async def test_connections_scores():
         (f"{start}🟨🟨🟨🟩\n🟨🟨🟨🟩\n🟨🟨🟨🟩\n🟩🟩🟩🟨\n", 0),
     ]
     for test_text, expected_score in tests:
-        resp_string, resp_json = await parse_connections(test_text, "testuser", no_db=True)
+        resp_string, resp_json = await ConnectionsGame.parse_text(test_text, "testuser", no_db=True)
         print(test_text)
         assert resp_json["score"] == expected_score
 
 
 @pytest.mark.asyncio
 async def test_incomplete_scores():
+    ConnectionsPlay.all().delete()
     start = "Connections\nPuzzle #736\n"
     tests = [
         f"{start}🟪🟪🟪🟪\n🟦🟦🟦🟦\n🟨🟨🟨🟨\n",
@@ -50,7 +49,7 @@ async def test_incomplete_scores():
         f"{start}🟪🟪🟪🟪\n🟪🟪🟪🟪\n🟦🟦🟦🟦\n🟨🟨🟨🟨\n",
     ]
     for test_text in tests:
-        resp_string, resp_json = await parse_connections(test_text, "testuser", no_db=True)
+        resp_string, resp_json = await ConnectionsGame.parse_text(test_text, "testuser", no_db=True)
         assert resp_json == {}
 
 
@@ -98,15 +97,15 @@ def test_connections_date_to_game_number():
     """
     Test the conversion of date to game number.
     """
-    assert connections_date_to_game_number(date(2025, 7, 17)) == 767
-    assert connections_date_to_game_number(date(2025, 5, 6)) == 695
+    assert ConnectionsGame.date_to_game_number(date(2025, 7, 17)) == 767
+    assert ConnectionsGame.date_to_game_number(date(2025, 5, 6)) == 695
 
 
 @pytest.mark.asyncio
 async def test_connections_daily_leaderboard():
     await ConnectionsPlay.all().delete()
     test_date = date(2025, 7, 20)
-    todays_game_number = connections_date_to_game_number(test_date)
+    todays_game_number = ConnectionsGame.date_to_game_number(test_date)
     con_game_objs = [
         ConnectionsPlay(
             game_number=todays_game_number,
@@ -156,7 +155,7 @@ async def test_connections_daily_leaderboard():
     ]
     for obj in con_game_objs:
         await obj.save()
-    leaderboard = await todays_connection_leaderboard_data(override_date=test_date)
+    leaderboard = await ConnectionsGame.todays_data(override_date=test_date)
     assert leaderboard == {
         "game_type": "connections",
         "game_number": 770,

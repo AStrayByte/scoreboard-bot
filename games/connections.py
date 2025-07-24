@@ -140,10 +140,10 @@ class ConnectionsGame(Game):
                 "won": won,
                 "raw_text": text,
             },
-            no_db=no_db
+            no_db=no_db,
         )
 
-        resp_string = f"{'(UPDATING RECORD) ' if is_new is False else ''}Connections Game #{game_number} completed with score {score} @{username}."
+        resp_string = f"{'(UPDATING RECORD) ' if not is_new and not no_db else ''}Connections Game #{game_number} completed with score {score} @{username}."
         resp_json = {
             "game_type": "connections",
             "game_number": game_number,
