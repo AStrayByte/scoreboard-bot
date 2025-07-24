@@ -90,6 +90,7 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
             chat_id=update.effective_chat.id,
             text=text,
             reply_to_message_id=update.message.message_id,
+            disable_notification=True,
         )
 
     username = get_username(update)
