@@ -17,5 +17,5 @@ Telegram bot to compare and share scores with friends across multiple apps like 
 
 db migration notes
 aerich init-db
-aerich upgrade
-aerich migrate
+aerich migrate  # make migrations
+aerich upgrade  # migrate

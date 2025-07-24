@@ -15,7 +15,7 @@ class QueensGame(Game):
         lnkd.in/queens
     """
 
-    start_date = date(2023, 6, 12)
+    start_date = date(2024, 5, 1)
     game_type = "queens"
     db_model = QueensPlay
     higher_score_first = False

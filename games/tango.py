@@ -1,7 +1,8 @@
 import re
+from datetime import date
+
 from games.base import Game
 from orm.models import TangoPlay
-from datetime import date
 
 
 class TangoGame(Game):
@@ -21,7 +22,7 @@ class TangoGame(Game):
         lnkd.in/tango.
     """
 
-    start_date = date(2023, 11, 19)
+    start_date = date(2024, 10, 8)
     game_type = "tango"
     db_model = TangoPlay
     higher_score_first = False
@@ -68,8 +69,3 @@ class TangoGame(Game):
             "raw_text": text,
         }
         return resp_json
-
-
-# IMPLEMENT TANGO IN MAIN.PY
-# DO ZIP NEXT
-# 3 MIGrate DB

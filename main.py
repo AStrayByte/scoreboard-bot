@@ -13,12 +13,19 @@ from telegram.ext import (
 from tortoise import Tortoise
 
 from games.queens import QueensGame
-from games.zip import parse_zip
+from games.tango import TangoGame
+from games.zip import ZipGame
 from image_generators.leaderboard import generate_leaderboard_image
 from games.connections import ConnectionsGame
 from aerich_config import TORTOISE_ORM
 
 TOKEN = "SECRET"
+games = [
+    ConnectionsGame,
+    QueensGame,
+    TangoGame,
+    ZipGame,
+]
 
 if TOKEN == "SECRET":
     try:
@@ -92,9 +99,9 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
 
     resp = None
     if text.startswith("Tango #"):
-        resp = parse_tango(text, username)
+        resp, json = await TangoGame.parse_text(text, username)
     elif text.startswith("Zip #"):
-        resp = parse_zip(text, username)
+        resp, json = await ZipGame.parse_text(text, username)
     elif text.startswith("Queens #"):
         resp, json = await QueensGame.parse_text(text, username)
     elif text.startswith("Connections\nPuzzle #"):
@@ -105,8 +112,8 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
     #     resp += await connections_stats()
     elif text.startswith("/todays_leaderboard"):
         data = []
-        data.append(await ConnectionsGame().todays_data())
-        data.append(await todays_queens_leaderboard_data())
+        for game in games:
+            data.append(await game.todays_data())
         image = await generate_leaderboard_image(data)
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,

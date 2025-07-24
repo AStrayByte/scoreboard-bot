@@ -5,4 +5,7 @@
   "python.testing.pytestEnabled": true,
   "editor.defaultFormatter": "charliermarsh.ruff",
   "ruff.configuration": "ruff.toml",
+  // setup ruff to format modified lines on save
+  "editor.formatOnSaveMode": "modifications",
+  "editor.formatOnSave": true,
 }

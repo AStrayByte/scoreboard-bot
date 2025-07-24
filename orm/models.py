@@ -41,6 +41,24 @@ class TangoPlay(Play):
         default_connection = "default"
 
 
+class ZipPlay(Play):
+    seconds = fields.IntField()
+    backtracks = fields.IntField()
+    flawless = fields.BooleanField()
+
+    class Meta:
+        table = "zip_play"
+        default_connection = "default"
+
+
+# class MiniCrossword(Play):
+#     ...
+#     # game_number somehow needs to be date as there is no game_number for MiniCrossword
+
+#     class Meta:
+#         table = "minicrossword_play"
+#         default_connection = "default"
+
 # Save a game instance
 # Show leaderboard for day
 # Show User Stats
