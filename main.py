@@ -12,11 +12,10 @@ from telegram.ext import (
 )
 from tortoise import Tortoise
 
-from games.queens import parse_queens, todays_queens_leaderboard_data
+from games.queens import QueensGame, todays_queens_leaderboard_data
 from games.tango import parse_tango
 from games.zip import parse_zip
 from image_generators.leaderboard import generate_leaderboard_image
-from secret import DB_URL
 from games.connections import ConnectionsGame
 from aerich_config import TORTOISE_ORM
 
@@ -98,9 +97,9 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
     elif text.startswith("Zip #"):
         resp = parse_zip(text, username)
     elif text.startswith("Queens #"):
-        resp, json = await parse_queens(text, username)
+        resp, json = await QueensGame.parse_text(text, username)
     elif text.startswith("Connections\nPuzzle #"):
-        resp, json = await ConnectionsGame().parse_text(text, username)
+        resp, json = await ConnectionsGame.parse_text(text, username)
     # elif text.startswith("/stats"):
     #     print("Stats command received")
     #     resp = "**STATS**\n\n"

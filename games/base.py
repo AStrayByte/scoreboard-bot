@@ -20,6 +20,17 @@ class Game(metaclass=SingletonMeta):
     higher_score_first: bool = True
 
     @classmethod
+    def get_update_defaults(cls, data: dict[str, int | bool]) -> dict[str, int | bool]:
+        """
+        Returns the defaults for updating the game record.
+        Args:
+            data (dict[str, int | bool]): The data dictionary containing game information.
+        Returns:
+            dict[str, int | bool]: A dictionary with the defaults for updating the game record.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    @classmethod
     def date_to_game_number(cls, request_date: date) -> int:
         """
         Converts a date to a game number based on the game's start date.
@@ -28,8 +39,38 @@ class Game(metaclass=SingletonMeta):
         delta = request_date - cls.start_date
         return delta.days + 1
 
-    def parse_text(self, text: str, username: str, no_db=False) -> tuple[str, dict[str, str | int]]:
-        raise NotImplementedError("Subclasses must implement parse_text method.")
+    @classmethod
+    async def parse_text(
+        cls, text: str, username: str, no_db=False
+    ) -> tuple[str, dict[str, str | int]]:
+        """
+        Extracts and formats Connections game information from a given text.
+        Args:
+            text (str): The input text containing Connections game information.
+            username (str): The username of the player.
+            no_db (bool): If True, does not save to the database.
+        Returns:
+            tuple[str, dict[str, str | int]]: A tuple containing a response string and a JSON-like
+                dictionary with game details.
+
+        """
+        try:
+            data = cls.process_to_dict(text)
+        except ValueError as e:
+            return str(e), {}
+
+        data["username"] = username
+
+        obj, is_new = await cls.update_or_create_game_record(
+            username=username,
+            game_number=data["game_number"],
+            defaults=cls.get_update_defaults(data),
+            no_db=no_db,
+        )
+
+        resp_string = f"{'(UPDATING RECORD) ' if not is_new and not no_db else ''}{cls.game_type.title()} Game #{data['game_number']} completed with score {data['score']} by {username}."
+
+        return resp_string, data
 
     @classmethod
     async def _get_game_records(

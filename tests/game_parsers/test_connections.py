@@ -12,11 +12,15 @@ async def test_connections_perfect():
     resp_string, resp_json = await ConnectionsGame.parse_text(text, "testuser", no_db=True)
     assert resp_json == {
         "game_type": "connections",
+        "mistakes": 0,
+        "purple_first": True,
+        "raw_text": text,
         "game_number": 736,
         "score": 100,
         "username": "testuser",
+        "won": True,
     }
-    assert resp_string == "Connections Game #736 completed with score 100 @testuser."
+    assert resp_string == "Connections Game #736 completed with score 100 by testuser."
 
 
 @pytest.mark.asyncio
