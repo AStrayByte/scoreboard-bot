@@ -18,6 +18,7 @@ from games.zip import ZipGame
 from image_generators.leaderboard import generate_leaderboard_image
 from games.connections import ConnectionsGame
 from aerich_config import TORTOISE_ORM
+from telegram.constants import ReactionEmoji
 
 TOKEN = "SECRET"
 games = [
@@ -99,6 +100,7 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
         return
 
     resp = None
+    json = None
     if text.startswith("Tango #"):
         _, json = await TangoGame.parse_text(text, username)
     elif text.startswith("Zip #"):
@@ -131,6 +133,13 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
     else:
         # ignore chatter
         ...
+    if json:
+        # react to the message by thumbs upping it
+        await context.bot.set_message_reaction(
+            chat_id=update.effective_chat.id,
+            message_id=update.effective_message.message_id,
+            reaction=[ReactionEmoji.MAN_TECHNOLOGIST],
+        )
     if resp:
         await respond(resp)
 
