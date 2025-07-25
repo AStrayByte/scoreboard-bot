@@ -100,13 +100,13 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
 
     resp = None
     if text.startswith("Tango #"):
-        resp, json = await TangoGame.parse_text(text, username)
+        _, json = await TangoGame.parse_text(text, username)
     elif text.startswith("Zip #"):
-        resp, json = await ZipGame.parse_text(text, username)
+        _, json = await ZipGame.parse_text(text, username)
     elif text.startswith("Queens #"):
-        resp, json = await QueensGame.parse_text(text, username)
+        _, json = await QueensGame.parse_text(text, username)
     elif text.startswith("Connections\nPuzzle #"):
-        resp, json = await ConnectionsGame.parse_text(text, username)
+        _, json = await ConnectionsGame.parse_text(text, username)
     # elif text.startswith("/stats"):
     #     print("Stats command received")
     #     resp = "**STATS**\n\n"
@@ -119,7 +119,7 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=image,
-            caption="Today's Connections Leaderboard",
+            caption="Today's Leaderboard",
             reply_to_message_id=update.message.message_id,
             disable_notification=True,
         )
