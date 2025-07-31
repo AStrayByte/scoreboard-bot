@@ -38,4 +38,19 @@ async def test_zip_with_backtracks():
 
     assert resp_string == "Zip Game #109 completed with score 18 by testuser."
 
+@pytest.mark.asyncio
+async def test_zip_with_one_backtrack():
+    text = "Zip #109 | 0:08 🏁\nWith 1 backtrack 🛑\n🏅 I’m in the Top 1% of all players today!"
+    resp_string, resp_json = await ZipGame.parse_text(text, "testuser")
+    assert resp_json == {
+        "game_type": "zip",
+        "game_number": 109,
+        "score": 13,
+        "total_seconds": 8,
+        "backtracks": 1,
+        "username": "testuser",
+        "flawless": False,
+        "raw_text": text,
+    }
 
+    assert resp_string == "Zip Game #109 completed with score 13 by testuser."

@@ -50,6 +50,10 @@ class ZipPlay(Play):
         table = "zip_play"
         default_connection = "default"
 
+class MiniCrosswordPlay(Play):
+    game_date = fields.DateField()
+    seconds = fields.IntField()
+
 
 # class MiniCrossword(Play):
 #     ...

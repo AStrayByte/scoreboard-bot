@@ -52,7 +52,7 @@ class ZipGame(Game):
             dict[str, str | int | bool]: A dictionary with the extracted game information.
         """
         backtracks_value = 5  # Value assigned to each backtrack
-        regex = r"Zip\s+#(?P<game_number>\d+)\s*\|\s*(?P<minutes>\d+):(?P<seconds>\d+)(?:.*?\n)?(?:With\s+(?:(?P<backtracks>\d+)|no)\s+backtracks)?"
+        regex = r"Zip\s+#(?P<game_number>\d+)\s*\|\s*(?P<minutes>\d+):(?P<seconds>\d+)(?:.*?\n)?(?:With\s+(?:(?P<backtracks>\d+)|no)\s+backtracks?)?"
         match = re.search(regex, text)
         if not match:
             raise ValueError("No Zip game information found.")

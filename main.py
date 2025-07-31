@@ -12,6 +12,7 @@ from telegram.ext import (
 )
 from tortoise import Tortoise
 
+from games.mini_crossword import MiniCrosswordGame
 from games.queens import QueensGame
 from games.tango import TangoGame
 from games.zip import ZipGame
@@ -26,6 +27,7 @@ games = [
     QueensGame,
     TangoGame,
     ZipGame,
+    MiniCrosswordGame,
 ]
 
 if TOKEN == "SECRET":
@@ -109,6 +111,9 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
         _, json = await QueensGame.parse_text(text, username)
     elif text.startswith("Connections\nPuzzle #"):
         _, json = await ConnectionsGame.parse_text(text, username)
+    elif "I solved the " in text and "New York Times Mini Crossword in " in text:
+        print("Processing Mini Crossword game")
+        _, json = await MiniCrosswordGame.parse_text(text, username)
     # elif text.startswith("/stats"):
     #     print("Stats command received")
     #     resp = "**STATS**\n\n"

@@ -13,13 +13,41 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
     "mistakes" INT NOT NULL,
     "won" INT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS "minicrosswordplay" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "username" VARCHAR(255) NOT NULL,
+    "game_number" INT NOT NULL,
+    "score" INT NOT NULL,
+    "raw_text" TEXT NOT NULL,
+    "game_date" DATE NOT NULL,
+    "seconds" INT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS "queens_play" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "username" VARCHAR(255) NOT NULL,
     "game_number" INT NOT NULL,
     "score" INT NOT NULL,
     "raw_text" TEXT NOT NULL,
-    "time_taken" INT NOT NULL,
+    "seconds" INT NOT NULL,
+    "flawless" INT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS "tango_play" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "username" VARCHAR(255) NOT NULL,
+    "game_number" INT NOT NULL,
+    "score" INT NOT NULL,
+    "raw_text" TEXT NOT NULL,
+    "seconds" INT NOT NULL,
+    "flawless" INT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS "zip_play" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "username" VARCHAR(255) NOT NULL,
+    "game_number" INT NOT NULL,
+    "score" INT NOT NULL,
+    "raw_text" TEXT NOT NULL,
+    "seconds" INT NOT NULL,
+    "backtracks" INT NOT NULL,
     "flawless" INT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "aerich" (
