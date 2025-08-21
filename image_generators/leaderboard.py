@@ -1,5 +1,6 @@
 from html import escape
 import requests
+from secret import BROWSERLESS_URL
 
 
 def generate_leaderboard_payload(games_data, viewport_width=1000, viewport_height=390):
@@ -153,7 +154,7 @@ async def generate_leaderboard_image(games_data: list[dict]) -> bytes:
     """
     payload = generate_leaderboard_payload(games_data)
     response = requests.post(
-        "http://10.0.0.69:3000/screenshot",
+        f"{BROWSERLESS_URL}/screenshot",
         json=payload,
         headers={"Content-Type": "application/json"},
     )
