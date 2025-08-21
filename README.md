@@ -17,9 +17,11 @@ Keep track, compete, and brag — all in one place!
     - [x] Tango
     - [x] Queens
     - [x] Zip
+    - [x] Mini Sudoku
+    - [x] CrossClimb
+    - [ ] Wordle
     - [ ] Strands
     - [ ] Pips
-    - [ ] Mini Sudoku
     - [ ] More to come! (PRs welcome)
 
 ---

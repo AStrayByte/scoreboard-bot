@@ -60,6 +60,15 @@ class ZipPlay(Play):
         default_connection = "default"
 
 
+class CrossClimbPlay(Play):
+    seconds = fields.IntField()
+    flawless = fields.BooleanField()
+
+    class Meta:
+        table = "crossclimb_play"
+        default_connection = "default"
+
+
 class MiniCrosswordPlay(Play):
     game_date = fields.DateField()
     seconds = fields.IntField()

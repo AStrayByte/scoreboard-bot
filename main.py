@@ -12,6 +12,7 @@ from telegram.ext import (
 )
 from tortoise import Tortoise
 
+from games.crossclimb import CrossClimbGame
 from games.mini_crossword import MiniCrosswordGame
 from games.mini_sudoku import MiniSudokuGame
 from games.queens import QueensGame
@@ -30,6 +31,7 @@ games = [
     ZipGame,
     MiniCrosswordGame,
     MiniSudokuGame,
+    CrossClimbGame,
 ]
 
 if TOKEN == "SECRET":
