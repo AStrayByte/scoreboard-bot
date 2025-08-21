@@ -10,7 +10,10 @@ Keep track, compete, and brag — all in one place!
 - Generate a **leaderboard image** for fun comparisons.
 - Simple setup and lightweight design.
 - Backed by a database for persistence.
-- Games Supported 
+
+---
+
+## Games Supported 👾
 - [x] Connections
 - [x] MiniCrossword
 - [x] Tango
