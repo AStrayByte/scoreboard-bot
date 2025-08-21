@@ -1,5 +1,9 @@
 {
-  "cSpell.words": ["levelname"],
+  "cSpell.words": [
+    "levelname",
+    "lnkd",
+    "minisudoku"
+  ],
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
