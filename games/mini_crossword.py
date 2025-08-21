@@ -18,6 +18,10 @@ class MiniCrosswordGame(Game):
     higher_score_first = False
 
     @classmethod
+    def str_matches(cls, input_text: str) -> bool:
+        return "I solved the " in input_text and "New York Times Mini Crossword in " in input_text
+
+    @classmethod
     def get_update_defaults(cls, data: dict[str, int | bool]) -> dict[str, int | bool]:
         """
         Returns the defaults for updating the game record.

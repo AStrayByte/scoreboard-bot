@@ -105,43 +105,32 @@ async def handle_text_input(text: str, update: Update, context: ContextTypes.DEF
 
     resp = None
     json = None
-    if text.startswith("Tango #"):
-        _, json = await TangoGame.parse_text(text, username)
-    elif text.startswith("Zip #"):
-        _, json = await ZipGame.parse_text(text, username)
-    elif text.startswith("Queens #"):
-        _, json = await QueensGame.parse_text(text, username)
-    elif text.startswith("Connections\nPuzzle #"):
-        _, json = await ConnectionsGame.parse_text(text, username)
-    elif text.startswith("Mini Sudoku #"):
-        _, json = await MiniSudokuGame.parse_text(text, username)
-    elif "I solved the " in text and "New York Times Mini Crossword in " in text:
-        print("Processing Mini Crossword game")
-        _, json = await MiniCrosswordGame.parse_text(text, username)
-    # elif text.startswith("/stats"):
-    #     print("Stats command received")
-    #     resp = "**STATS**\n\n"
-    #     resp += await connections_stats()
-    elif text.startswith("/todays_leaderboard"):
-        data = []
-        for game in games:
-            data.append(await game.todays_data())
-        image = await generate_leaderboard_image(data)
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=image,
-            caption="Today's Leaderboard",
-            reply_to_message_id=update.message.message_id,
-            disable_notification=True,
-        )
+    for game in games:
+        if game.str_matches(text):
+            _, json = await game.parse_text(text, username)
+            break
 
-    elif text.startswith("/chart_test"):
-        print("Chart test command received")
-        await chart_test(update, context)
-        return
-    else:
-        # ignore chatter
-        ...
+    if not json:
+        if text.startswith("/todays_leaderboard"):
+            data = []
+            for game in games:
+                data.append(await game.todays_data())
+            image = await generate_leaderboard_image(data)
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=image,
+                caption="Today's Leaderboard",
+                reply_to_message_id=update.message.message_id,
+                disable_notification=True,
+            )
+
+        elif text.startswith("/chart_test"):
+            print("Chart test command received")
+            await chart_test(update, context)
+            return
+        else:
+            # ignore chatter
+            ...
     if json:
         # react to the message by thumbs upping it
         await context.bot.set_message_reaction(

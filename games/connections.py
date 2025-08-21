@@ -44,6 +44,10 @@ class ConnectionsGame(Game):
     higher_score_first = True
 
     @classmethod
+    def str_matches(cls, input_text: str) -> bool:
+        return input_text.startswith("Connections\nPuzzle #")
+
+    @classmethod
     def get_update_defaults(cls, data: dict[str, int | bool]) -> dict[str, int | bool]:
         """
         Returns the defaults for updating the game record.

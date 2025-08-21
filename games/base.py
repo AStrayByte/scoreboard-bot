@@ -21,6 +21,17 @@ class Game(metaclass=SingletonMeta):
     higher_score_first: bool = True
 
     @classmethod
+    def str_matches(cls, input_text: str) -> bool:
+        """
+        Checks if the input text contains the game type.
+        Args:
+            input_text (str): The input text to check.
+        Returns:
+            bool: True if the game type is found in the input text, False otherwise.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    @classmethod
     def get_update_defaults(cls, data: dict[str, int | bool]) -> dict[str, int | bool]:
         """
         Returns the defaults for updating the game record.
@@ -160,6 +171,10 @@ class LinkedInSimpleTime(Game, metaclass=SingletonMeta):
     # game_type = "simple_time"
     # db_model = None
     higher_score_first = False
+
+    @classmethod
+    def str_matches(cls, input_text: str) -> bool:
+        return input_text.startswith(f"{cls.game_type.title()} #")
 
     @classmethod
     def get_update_defaults(cls, data: dict[str, int | bool]) -> dict[str, int | bool]:
