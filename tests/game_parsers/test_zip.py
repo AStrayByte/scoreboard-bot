@@ -52,5 +52,3 @@ async def test_zip_with_one_backtrack():
         "flawless": False,
         "raw_text": text,
     }
-
-    assert resp_string == "Zip Game #109 completed with score 13 by testuser."

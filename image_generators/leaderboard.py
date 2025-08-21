@@ -1,6 +1,11 @@
 from html import escape
 import requests
-from secret import BROWSERLESS_URL
+
+# import BROWSERLESS_URL if not running pytest otherwise use mock
+if "pytest" in __import__("sys").modules:
+    BROWSERLESS_URL = "http://10.0.0.69:3000"
+else:
+    from secret import BROWSERLESS_URL
 
 
 def generate_leaderboard_payload(games_data, viewport_width=1000, viewport_height=390):
