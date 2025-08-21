@@ -1,28 +1,27 @@
 # 🏆 Scoreboard Bot
 
-A Telegram bot that lets you **compare and share scores with friends** across multiple games and apps (like Wordle).  
+A Telegram bot that lets you **compare and share scores with friends** across multiple games and apps (like Tango or Wordle).  
 Keep track, compete, and brag — all in one place!
 
 ---
 
 ## 🚀 Features
-- Share daily scores from games like **Wordle** and others.
+- Share daily scores from games like **Connections or Zip** and others.
 - Generate a **leaderboard image** for fun comparisons.
 - Simple setup and lightweight design.
 - Backed by a database for persistence.
 - Games Supported 
-<!-- Checkbox list now -->
-    - [x] Connections
-    - [x] MiniCrossword
-    - [x] Tango
-    - [x] Queens
-    - [x] Zip
-    - [x] Mini Sudoku
-    - [x] CrossClimb
-    - [ ] Wordle
-    - [ ] Strands
-    - [ ] Pips
-    - [ ] More to come! (PRs welcome)
+- [x] Connections
+- [x] MiniCrossword
+- [x] Tango
+- [x] Queens
+- [x] Zip
+- [x] Mini Sudoku
+- [x] CrossClimb
+- [ ] Wordle
+- [ ] Strands
+- [ ] Pips
+- [ ] More to come! (PRs welcome)
 
 ---
 
@@ -81,12 +80,12 @@ This project uses **Tortoise ORM** with **Aerich** for migrations.
 ---
 
 ## 📥 Example Input
-![Example input](static_files/input_example.jpg)
+<img src="static_files/input_example.jpg" alt="Example input" width="400"/>
 
 Notice the bot reacts to messages it understands with a "👨‍💻" emoji.
 
 ## 🏆 Example Scoreboard
-![Example scoreboard](static_files/scoreboard_example.jpg)
+<img src="static_files/scoreboard_example.jpg" alt="Example scoreboard" width="400"/>
 
 ---
 
