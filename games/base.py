@@ -1,7 +1,8 @@
+import re
 from datetime import date
+from typing import Type
 
 from orm.models import Play
-from typing import Type
 
 
 class SingletonMeta(type):
@@ -135,3 +136,71 @@ class Game(metaclass=SingletonMeta):
             username=username, game_number=game_number, defaults=defaults
         )
         return obj, is_new
+
+
+class LinkedInSimpleTime(Game, metaclass=SingletonMeta):
+    """
+    Simple Game class for handling simple time-based game logic.
+
+    Games like Tango, Mini Sudoku, Queens, etc.
+
+    Example:
+        NameOfGame #114 | 0:06 and flawless 🏁
+        With no backtracks 🟢
+        🏅 I’m in the Top 1% of all players today!
+        lnkd.in/nameofgame.
+
+        NameOfGame #109 | 0:08 🏁
+        With 2 backtracks 🛑
+        🏅 I’m in the Top 1% of all players today!
+
+    """
+
+    # start_date = date(2025, 3, 18)
+    # game_type = "simple_time"
+    # db_model = None
+    higher_score_first = False
+
+    @classmethod
+    def get_update_defaults(cls, data: dict[str, int | bool]) -> dict[str, int | bool]:
+        return {
+            "score": data["score"],
+            "seconds": data["seconds"],
+            "flawless": data["flawless"],
+            "raw_text": data["raw_text"],
+        }
+
+    @classmethod
+    def process_to_dict(cls, text: str) -> dict[str, str | int | bool]:
+        """
+        Processes the input text to extract game information.
+        Args:
+            text (str): The input text containing Tango game information.
+        Returns:
+            dict[str, str | int | bool]: A dictionary with the extracted game information.
+        """
+        regex = rf"{cls.game_type.title()}\s+#(?P<game_number>\d+)\s*\|\s*(?P<minutes>\d+):(?P<seconds>\d+)"
+
+        match = re.search(regex, text)
+        if not match:
+            raise ValueError(f"No {cls.game_type} game information found.")
+
+        game_number = match.group("game_number")
+        minutes = match.group("minutes")
+        seconds = match.group("seconds")
+        if not game_number or not minutes or not seconds:
+            raise ValueError(
+                f"Incomplete {cls.game_type.title()} game information found.\n"
+                f"Game number: {game_number}, Minutes: {minutes}, Seconds: {seconds}"
+            )
+        game_number = int(game_number)
+        total_seconds = int(minutes) * 60 + int(seconds)
+        resp_json = {
+            "game_type": cls.game_type.lower(),
+            "game_number": game_number,
+            "score": total_seconds,
+            "seconds": total_seconds,
+            "flawless": "and flawless" in text,
+            "raw_text": text,
+        }
+        return resp_json

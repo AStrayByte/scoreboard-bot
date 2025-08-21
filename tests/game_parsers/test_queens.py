@@ -28,10 +28,10 @@ async def test_queens_not_flawless():
     assert resp_json == {
         "game_type": "queens",
         "game_number": 426,
-        "score": 120,
+        "score": 60,
         "seconds": 60,
         "flawless": False,
         "username": "testuser",
         "raw_text": text,
     }
-    assert resp_string == "Queens Game #426 completed with score 120 by testuser."
+    assert resp_string == "Queens Game #426 completed with score 60 by testuser."
