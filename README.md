@@ -44,6 +44,10 @@ Copy the example file and fill in your details:
 
 Update `secret.py` with your **Telegram API key** and other required values.
 
+### 6. Run the Bot
+
+    python main.py
+The bot should now be running! Find it on Telegram and start sharing scores.
 ---
 
 ## 🗄 Database & Migrations
